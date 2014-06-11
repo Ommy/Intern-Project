@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2014 at 06:29 PM
+-- Generation Time: Jun 11, 2014 at 06:40 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.4.24
 
@@ -32,7 +32,9 @@ CREATE TABLE IF NOT EXISTS `addresses` (
   `type` int(1) NOT NULL,
   `street_address` varchar(200) NOT NULL,
   `city` varchar(100) NOT NULL,
-  `country` varchar(100) NOT NULL
+  `country` varchar(100) NOT NULL,
+  `longitude` decimal(18,12) NOT NULL,
+  `latitude` decimal(18,12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
