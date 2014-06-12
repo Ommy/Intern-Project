@@ -1,35 +1,38 @@
 <!doctype html>
-
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
+    <title>Intern Project</title>
 
-  <title>Intern Project</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <script type="text/javascript">
+        var COMPANY_LATITUDE  = 37.792074;
+        var COMPANY_LONGITUDE = -122.398723;
+        var ICON_LOCATION     = '{% static "img/lookout_logo.min.png" %}';
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="{% static "js/app.js" %}"></script>
 
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-  {% load staticfiles %}
-  <link rel="stylesheet" href="{% static "css/styles.css" %}">
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvrDCSfQxN9h5UCwLKJxrb5kBQyI7l0cc">
-  </script>
-  <script type="text/javascript">
-    function initialize() {
-      var mapOptions = {
-        center: new google.maps.LatLng(37.792074, -122.398723),
-        zoom: 15
-      };
-      var map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
-    }
-    google.maps.event.addDomListener(window, 'load', initialize);
-  </script>
-  <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 </head>
 
 <body>
-  <div id="map-canvas"/>
+    <nav class="st-menu st-effect-1" id="sidebar">
+        <h2 class="icon icon-lab">Sidebar</h2>
+        <ul>
+            <li><a class="icon icon-data" href="#">Data Management</a></li>
+            <li><a class="icon icon-location" href="#">Location</a></li>
+            <li><a class="icon icon-study" href="#">Study</a></li>
+            <li><a class="icon icon-photo" href="#">Collections</a></li>
+            <li><a class="icon icon-wallet" href="#">Credits</a></li>
+        </ul>
+    </nav>
+    <div id="map-canvas" />
+</body>
 
-  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</html>
 </body>
 </html>
