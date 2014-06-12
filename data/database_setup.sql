@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 11, 2014 at 11:03 PM
+-- Generation Time: Jun 12, 2014 at 12:40 AM
 -- Server version: 5.6.17
 -- PHP Version: 5.4.24
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `intern_project`
 --
+CREATE DATABASE IF NOT EXISTS `intern_project` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `intern_project`;
 
 -- --------------------------------------------------------
 
@@ -46,14 +48,7 @@ CREATE TABLE IF NOT EXISTS `addresses` (
 CREATE TABLE IF NOT EXISTS `companies` (
 `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `companies`
---
-
-INSERT INTO `companies` (`id`, `name`) VALUES
-(1, 'Sun Life Financial');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -64,7 +59,6 @@ INSERT INTO `companies` (`id`, `name`) VALUES
 CREATE TABLE IF NOT EXISTS `housing` (
 `id` int(11) NOT NULL,
   `price` decimal(10,0) NOT NULL DEFAULT '0',
-  `lease` int(4) NOT NULL,
   `source` int(3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -93,7 +87,19 @@ CREATE TABLE IF NOT EXISTS `ratings` (
   `type` int(1) NOT NULL,
   `rating` int(3) DEFAULT NULL,
   `review` longtext,
-  `created` date NOT NULL
+  `created` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `salaries`
+--
+
+CREATE TABLE IF NOT EXISTS `salaries` (
+`id` int(11) NOT NULL,
+  `job_id` int(11) NOT NULL,
+  `amount` decimal(9,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -131,6 +137,12 @@ ALTER TABLE `ratings`
  ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`);
 
 --
+-- Indexes for table `salaries`
+--
+ALTER TABLE `salaries`
+ ADD PRIMARY KEY (`id`), ADD KEY `job_id` (`job_id`), ADD KEY `job_id_2` (`job_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -143,7 +155,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `companies`
 --
 ALTER TABLE `companies`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `housing`
 --
@@ -160,6 +172,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `ratings`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `salaries`
+--
+ALTER TABLE `salaries`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- Constraints for dumped tables
 --
 
@@ -168,6 +185,12 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `jobs`
 ADD CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
+
+--
+-- Constraints for table `salaries`
+--
+ALTER TABLE `salaries`
+ADD CONSTRAINT `salaries_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
