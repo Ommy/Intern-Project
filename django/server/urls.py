@@ -7,5 +7,5 @@ urlpatterns = patterns('',
     (r'^$', TemplateView.as_view(template_name="index.html")),
     (r'^statics/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.STATIC_URL}),
-
+    (r'^api/', include('app.urls')),
 )
