@@ -79,7 +79,7 @@ class Rating(MySQLModel):
     type            = IntegerField()
     rating          = IntegerField(null=True)
     review          = TextField(null=True)
-    created         = DateField()
+    created         = CharField(max_length=100)
     
     class Meta:
         db_table    = 'ratings'
