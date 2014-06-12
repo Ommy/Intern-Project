@@ -111,7 +111,7 @@ class Scraper
         address = street_address.split(",")
         geo = Geokit::Geocoders::GoogleGeocoder.geocode("#{@lat_long_map[id][:lat]},#{@lat_long_map[id][:lng]}")
         street = (address[0].nil? ? ( geo.full_address.nil? ? "NULL" : geo.full_address.split(",")[0]) : address[0]).strip
-        city = (address[1].nil? ? ( geo.city.nil? ? "NULL" : geo.city) : address[0]).strip
+        city = (address[1].nil? ? ( geo.city.nil? ? "NULL" : geo.city) : address[1]).strip
         country = (address[3].nil? ? (geo.country.nil? ? "NULL" : geo.country) : address[3]).strip
         csv_string = "#{street}*#{city}*#{country}*#{@lat_long_map[id][:lng]}*#{@lat_long_map[id][:lat]}"
         @address_array << csv_string
