@@ -51,54 +51,35 @@ class MySQLModel(Model):
 class Company(MySQLModel):
     name            = CharField()
 
-    class Meta:
-        db_table    = 'companies'
-
-class Job(MySQLModel):
-    company         = ForeignKeyField(Company)
-    title           = CharField(max_length=100)
-    description     = TextField(null=True)
-    
-    class Meta:
-        db_table    = 'jobs'
-
 class Address(MySQLModel):
-    owner_id        = IntegerField()
-    type            = IntegerField()
     street_address  = CharField(max_length=200, null=True)
     city            = CharField(max_length=100)
     country         = CharField(max_length=100)
     longitude       = DecimalField(max_digits=18, decimal_places=12, null=True)
     latitude        = DecimalField(max_digits=18, decimal_places=12, null=True)
-    
-    class Meta:
-        db_table    = 'addresses'
 
-class Rating(MySQLModel):
-    owner_id        = IntegerField()
-    type            = IntegerField()
-    rating          = IntegerField(null=True)
+class Job(MySQLModel):
+    company         = ForeignKeyField(Company)
+    address         = ForeignKeyField(Address)
+    title           = CharField(max_length=100)
+    description     = TextField(null=True)
+
+class Job_Rating(MySQLModel):
+    job             = ForeignKeyField(Job)
+    score           = IntegerField(null=True)
     review          = TextField(null=True)
-    created         = CharField(max_length=100)
-    
-    class Meta:
-        db_table    = 'ratings'
+    created         = CharField(max_length=100, null=True)
 
-class Salary(MySQLModel):
+class Job_Salary(MySQLModel):
     job             = ForeignKeyField(Job)
     amount          = DecimalField(max_digits=9, decimal_places=2)
-    
-    class Meta:
-        db_table    = 'salaries'
 
 #------------------------------------------------------------------------------
 # Scraper
 #------------------------------------------------------------------------------
 
 class Scraper:
-    current_company_id = -1
-    current_job_id     = -1
-    current_address_id = -1
+    current_job_id = -1
 
     def __init__(self):
         mysql_db.connect()
@@ -114,9 +95,6 @@ class Scraper:
         if soup is not None:
             self.parse_job_info_box(soup.find(id='job_info_box'))
             self.parse_job_rating_list(soup.find(id='job_rating_list'))
-            return True
-        else:
-            return False
 
     def parse_job_info_box(self, soup):
         raw_label       = soup.find('div', class_='job_title')
@@ -125,22 +103,22 @@ class Scraper:
         job_location    = soup.find('span', text=re.compile('\s*Location:\s*')).find_next_sibling('span', class_='job_information_content').text.strip()
         job_description = soup.find('span', text=re.compile('\s*Job Description:\s*')).find_next_sibling('span', class_='job_information_content').text.strip()
 
-        self.current_company_id = Scraper.save_company(company_name)
-        self.current_job_id     = Scraper.save_job(self.current_company_id, job_title, job_description)
-        self.current_address_id = Scraper.save_address(self.current_job_id, job_location)
+        company_id          = Scraper.save_company(company_name)
+        self.current_job_id = Scraper.save_job(company_id, job_title, job_location, job_description)
 
     def parse_job_rating_list(self, soup):
         job_listings = soup.find_all('div', class_='job_rating_box')
         for listing in job_listings:
-            rating     = listing.find('div', class_='job_rating')
-            comment    = listing.find('div', class_='job_rating_comment')
-            raw_salary = listing.find('div', class_='job_rating_salary_label')
+            raw_score   = listing.find('div', class_='job_rating')
+            raw_comment = listing.find('div', class_='job_rating_comment')
+            raw_salary  = listing.find('div', class_='job_rating_salary_label')
 
-            created = comment.find('span', class_='rating_date').text.strip()
-            review  = comment.text.replace(created, '').strip()
+            score   = int(float(raw_score.find('img')['alt'][:3]) * 2)
+            created = raw_comment.find('span', class_='rating_date').text.strip()
+            review  = raw_comment.text.replace(created, '').strip()
             salary  = re.findall(r'\d+', raw_salary.text)[0]
 
-            Scraper.save_rating(self.current_job_id, rating, review, created, salary)
+            Scraper.save_rating(self.current_job_id, score, review, created, salary)
 
     @staticmethod
     def save_company(company_name):
@@ -153,48 +131,41 @@ class Scraper:
         return company.id
 
     @staticmethod
-    def save_job(company_id, job_title, job_description):
+    def save_job(company_id, job_title, job_location, job_description):
         try:
             job = Job.select().where(Job.company == company_id, Job.title == job_title).get()
         except Job.DoesNotExist:
-            job = Job()
-            job.company = company_id
-            job.title = job_title
+            job_location_params = job_location.split(',')
+            address          = Address()
+            address.city     = job_location_params[0]
+            address.country  = job_location_params[-1]
+            address.save()
+
+            job             = Job()
+            job.company     = company_id
+            job.address     = address.id
+            job.title       = job_title
             job.description = job_description
             job.save()
         return job.id
 
     @staticmethod
-    def save_address(job_id, job_location):
+    def save_rating(job_id, score, review, created, salary_amount):
         try:
-            address = Address.select().where(Address.owner_id == job_id).get()
-        except Address.DoesNotExist:
-            job_location_params = job_location.split(',')
-            address = Address()
-            address.owner_id = job_id
-            address.type = JOB_TYPE
-            address.city = job_location_params[0]
-            address.country = job_location_params[-1]
-            address.save()
-        return address.id
+            job_rating = Job_Rating.select().where(Job_Rating.job == job_id, Job_Rating.review == review).get()
+        except Job_Rating.DoesNotExist:
+            job_rating         = Job_Rating()
+            job_rating.job     = job_id
+            job_rating.score   = score
+            job_rating.review  = review
+            job_rating.created = created
+            job_rating.save()
 
-    @staticmethod
-    def save_rating(job_id, rating, review, created, salary_amount):
-        try:
-            rating = Rating.select().where(Rating.owner_id == job_id, Rating.review == review).get()
-        except Rating.DoesNotExist:
-            rating = Rating()
-            rating.owner_id = job_id
-            rating.type = JOB_TYPE
-            rating.review = review
-            rating.created = created
-            rating.save()
-
-            salary = Salary()
-            salary.job = job_id
-            salary.amount = salary_amount
-            salary.save()
-        return rating.id
+            job_salary        = Job_Salary()
+            job_salary.job    = job_id
+            job_salary.amount = salary_amount
+            job_salary.save()
+        return job_rating.id
 
 #------------------------------------------------------------------------------
 # Main
