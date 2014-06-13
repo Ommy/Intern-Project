@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class Address(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)    
     street_address = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -23,14 +23,14 @@ class Address(models.Model):
         db_table = 'address'
 
 class Company(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200)
     class Meta:
         managed = False
         db_table = 'company'
 
 class Crime(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     address = models.ForeignKey(Address)
     incident_num = models.IntegerField(unique=True)
     occurred = models.DateTimeField()
@@ -41,7 +41,7 @@ class Crime(models.Model):
         db_table = 'crime'
 
 class House(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     address = models.ForeignKey(Address)
     price = models.DecimalField(max_digits=9, decimal_places=0)
     source = models.IntegerField()
@@ -50,7 +50,7 @@ class House(models.Model):
         db_table = 'house'
 
 class Job(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     company = models.ForeignKey(Company)
     address = models.ForeignKey(Address)
     title = models.CharField(max_length=100)
@@ -60,7 +60,7 @@ class Job(models.Model):
         db_table = 'job'
 
 class JobRating(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     job = models.ForeignKey(Job)
     score = models.IntegerField(blank=True, null=True)
     review = models.TextField(blank=True)
