@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
-from app.models import Address, Company, Crime, House, Job, JobRating, JobSalary
+from app.models import Address, Company, Crime, House, HouseToCrime, Job, JobRating, JobSalary
 from app.serializers import AddressSerializer, CompanySerializer, CrimeSerializer, HouseSerializer, JobSerializer, JobRatingSerializer, JobSalarySerializer
 
 
@@ -63,7 +63,7 @@ def crime_list(request):
 
 def house_list(request):
     if request.method == 'GET':
-        houses = House.objects.all()
+        houses = Housing.objects.all()
         serializer = HouseSerializer(houses, many=True)
         return JSONResponse(serializer.data)
 
@@ -84,11 +84,12 @@ def weight_list(request):
         min_price = float(request.GET.get('price[min]', None))
 
         houses = House.objects.all()
-        crimes = Crime.objects.all()
 
         house_in_range = []
         for house in houses:
             work_distance = coordinatesToMiles(house.address.latitude, house.address.longitude , LOOKOUT_LAT, LOOKOUT_LONG)
+            price = float(house.price)
+            # get all crimes that is in the house range
             price = float(house.price)
             if ((work_distance <= max_distance 
                and work_distance >= min_distance)
@@ -96,16 +97,16 @@ def weight_list(request):
                and price >= min_price)):
                 distance_score = (work_distance/max_distance)
                 price_score = (price/max_price)
-                crime_count = 0
-                crime_score = 0
-                for crime in crimes:
-                    crime_distance = coordinatesToMiles(house.address.latitude, house.address.longitude , crime.address.latitude, crime.address.longitude)
-                    if crime_distance <= work_distance:
-                        crime_count += 1
-                        crime_distance_score = (work_distance - crime_distance)/work_distance
+                crime_score = 1
+                crimes_around = HouseToCrime.objects.filter(house_id = house.id, distance__lte = work_distance) 
+                for crime_around in crimes_around:
+                    if crime_around.distance <= work_distance:
+                        crime = Crime.objects.get(id=crime_around.crime_id)
+                        crime_distance_score = (work_distance - crime_around.distance)/work_distance
                         severity = CRIME_SEVERITY[crime.category]
                         crime_score += severity*crime_distance_score
-                crime_score = (MAX_SEVERITY*work_distance*crime_count)/(crime_score)
+                print len(crimes_around)
+                crime_score = (MAX_SEVERITY*work_distance*len(crimes_around))/(crime_score)
                 weight = (crime_score*safety) + distance_score + price_score
                 house_in_range.append({'latitude' : float(house.address.latitude), 
                                        'longitude' : float(house.address.longitude), 
