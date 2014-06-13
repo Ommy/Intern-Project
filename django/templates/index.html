@@ -17,6 +17,8 @@
 
         var MAX_PRICE = 10000;
         var MIN_PRICE = 10;
+
+        var HEATMAP_RADIUS = 100;
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="{% static "js/app.js" %}"></script>
@@ -27,6 +29,7 @@
 </head>
 
 <body>
+    <div id="loader"></div>
     <div id="st-container" class="st-container st-effect-3 st-menu-open">
         <a id="expand-btn" href="#"></a>
         <div class="st-pusher">
