@@ -15,7 +15,6 @@ from bs4 import BeautifulSoup
 SOURCE_URL = 'http://data.sfgov.org/resource/gxxq-x39z.json'
 CITY       = 'San Francisco'
 COUNTRY    = 'United States'
-CRIME_TYPE = 2
 
 def request_json(url):
     logging.info('Getting json of ' + url)
@@ -56,25 +55,18 @@ class MySQLModel(Model):
         database = mysql_db
 
 class Address(MySQLModel):
-    owner_id       = IntegerField()
-    type           = IntegerField()
     street_address = CharField(max_length=200, null=True)
     city           = CharField(max_length=100)
     country        = CharField(max_length=100)
     longitude      = DecimalField(max_digits=18, decimal_places=12, null=True)
     latitude       = DecimalField(max_digits=18, decimal_places=12, null=True)
-    
-    class Meta:
-        db_table   = 'addresses'
 
 class Crime(MySQLModel):
+    address        = ForeignKeyField(Address)
     incident_num   = IntegerField()
     occurred       = DateTimeField()
     category       = CharField(max_length=200)
     description    = CharField(max_length=200)
-
-    class Meta:
-        db_table   = 'crimes'
 
 #------------------------------------------------------------------------------
 # Scraper
@@ -101,21 +93,20 @@ class Scraper:
         try:
             crime = Crime.select().where(Crime.incident_num == incident_num).get()
         except Crime.DoesNotExist:
-            crime = Crime()
-            crime.incident_num = incident_num
-            crime.occurred = occurred
-            crime.category = category
-            crime.description = description
-            crime.save()
-
             address = Address()
-            address.owner_id = crime.id
-            address.type = CRIME_TYPE
             address.city = CITY
             address.country = COUNTRY
             address.longitude = longitude
             address.latitude = latitude
             address.save()
+
+            crime = Crime()
+            crime.address = address
+            crime.incident_num = incident_num
+            crime.occurred = occurred
+            crime.category = category
+            crime.description = description
+            crime.save()
         return crime.id
 
 #------------------------------------------------------------------------------

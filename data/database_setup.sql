@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.3
+-- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 12, 2014 at 12:40 AM
--- Server version: 5.6.17
--- PHP Version: 5.4.24
+-- Host: localhost
+-- Generation Time: Jun 12, 2014 at 04:22 PM
+-- Server version: 5.5.37-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -25,29 +25,53 @@ USE `intern_project`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `addresses`
+-- Table structure for table `address`
 --
 
-CREATE TABLE IF NOT EXISTS `addresses` (
-`id` int(11) NOT NULL,
-  `owner_id` int(11) NOT NULL,
-  `type` int(1) NOT NULL,
+CREATE TABLE IF NOT EXISTS `address` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `street_address` varchar(200) DEFAULT NULL,
   `city` varchar(100) NOT NULL,
   `country` varchar(100) NOT NULL,
   `longitude` decimal(18,12) DEFAULT NULL,
-  `latitude` decimal(18,12) DEFAULT NULL
+  `latitude` decimal(18,12) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `id_2` (`id`),
+  KEY `id_3` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `companies`
+-- Table structure for table `company`
 --
 
-CREATE TABLE IF NOT EXISTS `companies` (
-`id` int(11) NOT NULL,
-  `name` varchar(200) NOT NULL
+CREATE TABLE IF NOT EXISTS `company` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `id_2` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crime`
+--
+
+CREATE TABLE IF NOT EXISTS `crime` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address_id` int(11) NOT NULL,
+  `incident_num` int(11) NOT NULL,
+  `occurred` datetime NOT NULL,
+  `category` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `incident_num` (`incident_num`),
+  KEY `id` (`id`),
+  KEY `address_id` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -57,140 +81,99 @@ CREATE TABLE IF NOT EXISTS `companies` (
 --
 
 CREATE TABLE IF NOT EXISTS `housing` (
-`id` int(11) NOT NULL,
-  `price` decimal(10,0) NOT NULL DEFAULT '0',
-  `source` int(3) NOT NULL
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address_id` int(11) NOT NULL,
+  `price` decimal(9,0) NOT NULL DEFAULT '0',
+  `source` int(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `address_id` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jobs`
+-- Table structure for table `job`
 --
 
-CREATE TABLE IF NOT EXISTS `jobs` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `job` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NOT NULL,
+  `address_id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
-  `description` longtext
+  `description` longtext,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `company_id` (`company_id`),
+  KEY `address_id` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ratings`
+-- Table structure for table `job_rating`
 --
 
-CREATE TABLE IF NOT EXISTS `ratings` (
-`id` int(11) NOT NULL,
-  `owner_id` int(11) NOT NULL,
-  `type` int(1) NOT NULL,
+CREATE TABLE IF NOT EXISTS `job_rating` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_id` int(11) NOT NULL,
   `rating` int(3) DEFAULT NULL,
   `review` longtext,
-  `created` varchar(100) DEFAULT NULL
+  `created` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `job_id` (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `salaries`
+-- Table structure for table `salary`
 --
 
-CREATE TABLE IF NOT EXISTS `salaries` (
-`id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `salary` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
-  `amount` decimal(9,2) NOT NULL
+  `amount` decimal(9,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `job_id` (`job_id`),
+  KEY `job_id_2` (`job_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `addresses`
---
-ALTER TABLE `addresses`
- ADD PRIMARY KEY (`id`), ADD KEY `owner_id` (`owner_id`), ADD KEY `id` (`id`);
-
---
--- Indexes for table `companies`
---
-ALTER TABLE `companies`
- ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`);
-
---
--- Indexes for table `housing`
---
-ALTER TABLE `housing`
- ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`);
-
---
--- Indexes for table `jobs`
---
-ALTER TABLE `jobs`
- ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`), ADD KEY `company_id` (`company_id`);
-
---
--- Indexes for table `ratings`
---
-ALTER TABLE `ratings`
- ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`);
-
---
--- Indexes for table `salaries`
---
-ALTER TABLE `salaries`
- ADD PRIMARY KEY (`id`), ADD KEY `job_id` (`job_id`), ADD KEY `job_id_2` (`job_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `addresses`
---
-ALTER TABLE `addresses`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `companies`
---
-ALTER TABLE `companies`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `housing`
---
-ALTER TABLE `housing`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `jobs`
---
-ALTER TABLE `jobs`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ratings`
---
-ALTER TABLE `ratings`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `salaries`
---
-ALTER TABLE `salaries`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `jobs`
+-- Constraints for table `crime`
 --
-ALTER TABLE `jobs`
-ADD CONSTRAINT `jobs_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
+ALTER TABLE `crime`
+  ADD CONSTRAINT `crime_ibfk_1` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`);
 
 --
--- Constraints for table `salaries`
+-- Constraints for table `housing`
 --
-ALTER TABLE `salaries`
-ADD CONSTRAINT `salaries_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`);
+ALTER TABLE `housing`
+  ADD CONSTRAINT `housing_ibfk_1` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`);
+
+--
+-- Constraints for table `job`
+--
+ALTER TABLE `job`
+  ADD CONSTRAINT `job_ibfk_2` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`),
+  ADD CONSTRAINT `job_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`);
+
+--
+-- Constraints for table `job_rating`
+--
+ALTER TABLE `job_rating`
+  ADD CONSTRAINT `job_rating_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`);
+
+--
+-- Constraints for table `salary`
+--
+ALTER TABLE `salary`
+  ADD CONSTRAINT `salary_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
