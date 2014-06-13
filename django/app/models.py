@@ -12,7 +12,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class Address(models.Model):
-    id = models.IntegerField(primary_key=True)    
+    id = models.IntegerField(primary_key=True)
     street_address = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -40,6 +40,7 @@ class Crime(models.Model):
         managed = False
         db_table = 'crime'
 
+# NOTE: the model name is different from the table name
 class House(models.Model):
     id = models.IntegerField(primary_key=True)
     address = models.ForeignKey(Address)
@@ -47,7 +48,7 @@ class House(models.Model):
     source = models.IntegerField()
     class Meta:
         managed = False
-        db_table = 'house'
+        db_table = 'housing'
 
 class Job(models.Model):
     id = models.IntegerField(primary_key=True)
