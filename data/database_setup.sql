@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `job` (
 CREATE TABLE IF NOT EXISTS `job_rating` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
-  `rating` int(3) DEFAULT NULL,
+  `score` int(3) DEFAULT NULL,
   `review` longtext,
   `created` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -128,10 +128,10 @@ CREATE TABLE IF NOT EXISTS `job_rating` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `salary`
+-- Table structure for table `job_salary`
 --
 
-CREATE TABLE IF NOT EXISTS `salary` (
+CREATE TABLE IF NOT EXISTS `job_salary` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_id` int(11) NOT NULL,
   `amount` decimal(9,2) NOT NULL,
@@ -170,10 +170,10 @@ ALTER TABLE `job_rating`
   ADD CONSTRAINT `job_rating_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`);
 
 --
--- Constraints for table `salary`
+-- Constraints for table `job_salary`
 --
-ALTER TABLE `salary`
-  ADD CONSTRAINT `salary_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`);
+ALTER TABLE `job_salary`
+  ADD CONSTRAINT `job_salary_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
