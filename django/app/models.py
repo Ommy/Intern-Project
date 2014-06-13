@@ -12,11 +12,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class Address(models.Model):
-<<<<<<< HEAD
-    id = models.IntegerField(primary_key=True)
-=======
     id = models.IntegerField(primary_key=True)    
->>>>>>> 438a729c777e5f6401c9e0c3a4a5d1fb6948f39d
     street_address = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
