@@ -77,7 +77,6 @@ def job_list(request):
 def weight_list(request):
     if request.method == 'GET':
         safety = float(request.GET.get('safety', None))
-        print type(safety)
 
         max_distance =  float(request.GET.get('distance[max]', None))
         min_distance = float(request.GET.get('distance[min]', None))
@@ -92,9 +91,9 @@ def weight_list(request):
             work_distance = coordinatesToMiles(house.address.latitude, house.address.longitude , LOOKOUT_LAT, LOOKOUT_LONG)
             price = float(house.price)
             if ((work_distance <= max_distance 
-               or work_distance >= min_distance)
+               and work_distance >= min_distance)
                and (price <= max_price
-               or price >= min_price)):
+               and price >= min_price)):
                 distance_score = (work_distance/max_distance)
                 price_score = (price/max_price)
                 crime_count = 0
