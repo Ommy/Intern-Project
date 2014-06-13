@@ -3,7 +3,8 @@
     heatMapData = [];
 
     google.load('jquery', '1.4.2');
-    google.load('maps', '3', { other_params: "key=AIzaSyDvrDCSfQxN9h5UCwLKJxrb5kBQyI7l0cc&libraries=visualization" });
+    google.load('jqueryui', '1.7.2');
+    google.load('maps', '3', { other_params: 'key=AIzaSyDvrDCSfQxN9h5UCwLKJxrb5kBQyI7l0cc&libraries=visualization' });
     google.setOnLoadCallback(function() {
         window.company_latlng = new google.maps.LatLng(COMPANY_LATITUDE, COMPANY_LONGITUDE);
         window.currentCenter  = company_latlng;
@@ -16,7 +17,9 @@
 
         $(document).ready(function() {
             addCompanyMarker();
-            openSidebar();
+            setupSlider();
+            setupForm();
+            setupSidebar();
         });
     });
 
@@ -31,10 +34,91 @@
         });
     };
 
-    openSidebar = function() {
-        $('#expand-btn').click(function() {
-            $('#st-container').toggleClass('st-menu-open');
+    setupSlider = function() {
+        var updateDistance = function(min, max) {
+            var minMile = parseFloat(min) / 100;
+            var maxMile = parseFloat(max) / 100;
+            $('#distance-text').text(minMile + ' miles - ' + maxMile + ' miles');
+            $('#distance-input')
+                .attr('data-min', minMile)
+                .attr('data-max', maxMile);
+        };
+        $('#distance-slider').slider({
+            range:  true,
+            min:    MIN_DISTANCE,
+            max:    MAX_DISTANCE,
+            values: [MIN_DISTANCE, MAX_DISTANCE],
+            slide:  function(event, ui) {
+                updateDistance(ui.values[0], ui.values[1])
+            }
         });
+        updateDistance(MIN_DISTANCE, MAX_DISTANCE);
+
+        var updatePriceRange = function(min, max) {
+            $('#price-range-text').text('$' + min + ' - $' + max);
+            $('#price-range-input')
+                .attr('data-min', min)
+                .attr('data-max', max);
+        };
+        $('#price-range-slider').slider({
+            range:  true,
+            min:    MIN_PRICE,
+            max:    MAX_PRICE,
+            values: [MIN_PRICE, MAX_PRICE],
+            slide:  function(event, ui) {
+                updatePriceRange(ui.values[0], ui.values[1]);
+            }
+        });
+        updatePriceRange(MIN_PRICE, MAX_PRICE);
+    };
+
+    setupForm = function() {
+        $('#filter').submit(function() {
+            closeSidebar();
+            return false;
+        });
+    };
+
+    setupSidebar = function() {
+        $('#expand-btn').click(function() {
+            if ($('#st-container').hasClass('st-menu-open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+            return false;
+        });
+    };
+
+    closeSidebar = function() {
+        $.ajax({
+            url:        '/api/map',
+            type:       'GET',
+            dataType:   'json',
+            data: {
+                distance: {
+                    min: $('#distance-input').attr('data-min'),
+                    max: $('#distance-input').attr('data-max')
+                },
+                price: {
+                    min: $('#price-range-input').attr('data-min'),
+                    max: $('#price-range-input').attr('data-max')
+                },
+                safety:  $('#safety').val()
+            },
+            success: function(data) {
+                console.log(data);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        });
+
+        $('#st-container').removeClass('st-menu-open');
+    };
+
+    openSidebar = function() {
+        $('#st-container').addClass('st-menu-open');
     };
 
 /*
@@ -60,10 +144,10 @@
                 for (var i = company.length - 1; i >= 0; i--) {
                     var newOption = $('<option>');
                     newOption.attr({
-                        "value":        company[i].id,
-                        "data-addr":    company[i].location,
-                        "data-lat":     company[i].lat,
-                        "data-lng":     company[i].long
+                        'value':        company[i].id,
+                        'data-addr':    company[i].location,
+                        'data-lat':     company[i].lat,
+                        'data-lng':     company[i].long
                     });
                     newOption.text(company[i].name)
 
@@ -154,7 +238,7 @@
                 title:          companyName
             });
             var infowindow = new google.maps.InfoWindow({
-                content: '<strong style="display:block">' + companyName + '</strong><span style="display:block">' + companyAddr + '</span>'
+                content: '<strong style='display:block'>' + companyName + '</strong><span style='display:block'>' + companyAddr + '</span>'
             });
             google.maps.event.addListener(companyMarker, 'click', function() {
                 infowindow.open(map, companyMarker);
@@ -169,7 +253,7 @@
                 success: function(data) {
                     // living cost
                     var costAverage = data.avg;
-                    var costOutput  = $('<li class="cost">');
+                    var costOutput  = $('<li class='cost'>');
                     costOutput.append('The average monthly rent of living <span>' + distance + ' km</span> from <span>' + companyName + '</span> is:')
                     costOutput.append('<strong>$' + costAverage.toFixed(2) + '</strong>');
                     $('#app ul').find('.cost').remove();

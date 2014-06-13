@@ -5,11 +5,18 @@
     <title>Intern Project</title>
 
     {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "css/jqueryui.css" %}">
     <link rel="stylesheet" href="{% static "css/styles.css" %}">
     <script type="text/javascript">
         var COMPANY_LATITUDE  = 37.792074;
         var COMPANY_LONGITUDE = -122.398723;
         var ICON_LOCATION     = '{% static "img/lookout-icon.png" %}';
+        
+        var MAX_DISTANCE = 1000;
+        var MIN_DISTANCE = 0;
+
+        var MAX_PRICE = 10000;
+        var MIN_PRICE = 10;
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="{% static "js/app.js" %}"></script>
@@ -20,29 +27,34 @@
 </head>
 
 <body>
-    <div id="st-container" class="st-container st-effect-4 st-menu-open">
+    <div id="st-container" class="st-container st-effect-3 st-menu-open">
         <a id="expand-btn" href="#"></a>
-        <nav id="sidebar" class="st-menu st-effect-4">
-            <h1 id="logo">Lookout</h1>
-            <form>
-                <p>
-                    <label>Distance from work:</label>
-                </p>
-                <p>
-                    <label>Price Range:</label>
-                </p>
-                <p>
-                    <label title="How much you're willing to live near recently commited crimes.">How brave are you:</label>
-                    <select>
-                        <option value="0">Dare Devil</option>
-                        <option value="1">Brave</option>
-                        <option value="2">Cautious</option>
-                        <option value="3">Chicken</option>
-                    </select>
-                </p>
-            </form>
-        </nav>
         <div class="st-pusher">
+            <nav id="sidebar" class="st-menu st-effect-3">
+                <h1 id="logo">Lookout</h1>
+                <form id="filter">
+                    <p>
+                        <label>Distance: <span id="distance-text"></span></label>
+                        <input type="text" id="distance-input" class="hide">
+                        <div id="distance-slider"></div>
+                    </p>
+                    <p>
+                        <label>Price Range: <span id="price-range-text"></span></label>
+                        <input type="text" id="price-range-input" class="hide">
+                        <div id="price-range-slider"></div>
+                    </p>
+                    <p>
+                        <label title="How much you're willing to live near recently commited crimes.">How brave are you?</label>
+                        <select id="safety">
+                            <option value="1">Dare Devil</option>
+                            <option value="2">Brave</option>
+                            <option value="3" selected="selected">Cautious</option>
+                            <option value="4">Chicken</option>
+                        </select>
+                    </p>
+                    <button type="submit">Submit</button>
+                </form>
+            </nav>
             <div class="st-content">
                 <div class="st-content-inner">
                     <div id="map-canvas" />
