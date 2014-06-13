@@ -64,6 +64,20 @@ def crime_list(request):
 def house_list(request):
     if request.method == 'GET':
         houses = House.objects.all()
+
+        if (request.GET.get('distance[max]', None) != None
+           or request.GET.get('distance[min]', None) != None):
+            max_distance =  float(request.GET.get('distance[max]', None))
+            min_distance = float(request.GET.get('distance[min]', None))
+            
+            house_in_range = []
+            for house in houses:
+                work_distance = coordinatesToMiles(house.address.latitude, house.address.longitude , LOOKOUT_LAT, LOOKOUT_LONG)
+                if ((work_distance <= max_distance)
+                    and (work_distance >= min_distance)):
+                    house_in_range.append(house)
+            houses = house_in_range
+
         serializer = HouseSerializer(houses, many=True)
         return JSONResponse(serializer.data)
 
