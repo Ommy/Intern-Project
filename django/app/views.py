@@ -35,7 +35,7 @@ CRIME_SEVERITY = {
     'Vandalism'                   : 4,
     'Vehicle Theft'               : 8,
     'Warrants'                    : 2,
-    'Weapon Laws'                  : 5
+    'Weapon Laws'                 : 5
 }
 
 LOOKOUT_LAT = 37.791841
@@ -107,7 +107,9 @@ def weight_list(request):
                         crime_score += severity*crime_distance_score
                 crime_score = (MAX_SEVERITY*work_distance)/(crime_score)
                 weight = (crime_score*safety) + distance_score + price_score
-                house_in_range.append([float(house.address.latitude), float(house.address.longitude), weight])
+                house_in_range.append({'latitude' : float(house.address.latitude), 
+                                       'longitude' : float(house.address.longitude), 
+                                       'weight' : weight})
         return JSONResponse(house_in_range)
 
 
