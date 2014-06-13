@@ -1,35 +1,66 @@
 <!doctype html>
-
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
+    <title>Intern Project</title>
 
-  <title>Intern Project</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "css/jqueryui.css" %}">
+    <link rel="stylesheet" href="{% static "css/styles.css" %}">
+    <script type="text/javascript">
+        var COMPANY_LATITUDE  = 37.792074;
+        var COMPANY_LONGITUDE = -122.398723;
+        var ICON_LOCATION     = '{% static "img/lookout-icon.png" %}';
+        
+        var MAX_DISTANCE = 1000;
+        var MIN_DISTANCE = 0;
 
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-  {% load staticfiles %}
-  <link rel="stylesheet" href="{% static "css/styles.css" %}">
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvrDCSfQxN9h5UCwLKJxrb5kBQyI7l0cc">
-  </script>
-  <script type="text/javascript">
-    function initialize() {
-      var mapOptions = {
-        center: new google.maps.LatLng(37.792074, -122.398723),
-        zoom: 15
-      };
-      var map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
-    }
-    google.maps.event.addDomListener(window, 'load', initialize);
-  </script>
-  <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
+        var MAX_PRICE = 10000;
+        var MIN_PRICE = 10;
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="{% static "js/app.js" %}"></script>
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 </head>
 
 <body>
-  <div id="map-canvas"/>
-
-  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <div id="st-container" class="st-container st-effect-3 st-menu-open">
+        <a id="expand-btn" href="#"></a>
+        <div class="st-pusher">
+            <nav id="sidebar" class="st-menu st-effect-3">
+                <h1 id="logo">Lookout</h1>
+                <form id="filter">
+                    <p>
+                        <label>Distance: <span id="distance-text"></span></label>
+                        <input type="text" id="distance-input" class="hide">
+                        <div id="distance-slider"></div>
+                    </p>
+                    <p>
+                        <label>Price Range: <span id="price-range-text"></span></label>
+                        <input type="text" id="price-range-input" class="hide">
+                        <div id="price-range-slider"></div>
+                    </p>
+                    <p>
+                        <label title="How much you're willing to live near recently commited crimes.">How brave are you?</label>
+                        <select id="safety">
+                            <option value="1">Dare Devil</option>
+                            <option value="2">Brave</option>
+                            <option value="3" selected="selected">Cautious</option>
+                            <option value="4">Chicken</option>
+                        </select>
+                    </p>
+                    <button type="submit">Submit</button>
+                </form>
+            </nav>
+            <div class="st-content">
+                <div class="st-content-inner">
+                    <div id="map-canvas" />
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
