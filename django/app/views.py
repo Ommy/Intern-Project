@@ -18,3 +18,7 @@ def company_list(request):
     	companies = Companies.objects.all()
     	serializer = CompanySerializer(companies, many=True)
     	return JSONResponse(serializer.data)
+
+def crime_list(request):
+	if request.method == 'GET':
+		crime = Crimes.objects.all()
