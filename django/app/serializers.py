@@ -4,7 +4,7 @@ from app.models import Address, Company, Crime, House, Job, JobRating, JobSalary
 
 
 class AddressSerializer(serializers.ModelSerializer):
-	class Meta:
+	class Meta: 
 		model = Address
 		fields = ('street_address', 'city',  'country', 'longitude', 'latitude')
 
@@ -43,4 +43,3 @@ class JobSalarySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = JobRating
 		fields = ('id', 'job', 'amount')
-

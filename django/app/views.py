@@ -9,6 +9,7 @@ from rest_framework.parsers import JSONParser
 from app.models import Address, Company, Crime, House, Job, JobRating, JobSalary
 from app.serializers import AddressSerializer, CompanySerializer, CrimeSerializer, HouseSerializer, JobSerializer, JobRatingSerializer, JobSalarySerializer
 
+
 CRIME_SEVERITY = { 
     'Arson'                       : 4,
     'Assault'                     : 6,
@@ -71,6 +72,7 @@ def job_list(request):
         jobs = Job.objects.all()
         serializer = JobSerializer(jobs, many=True)
         return JSONResponse(serializer.data)
+
 
 def weight_list(request):
     if request.method == 'GET':
@@ -146,11 +148,3 @@ def coordinatesToMiles(lat1, long1, lat2, long2):
     # Remember to multiply arc by the radius of the earth 
     # in your favorite set of units to get length.
     return arc*3960
-
-
-
-
-
-
-
-

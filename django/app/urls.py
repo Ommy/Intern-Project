@@ -7,3 +7,4 @@ urlpatterns = patterns('app.views',
     url(r'^jobs/$', 'job_list'),
     url(r'^weights?$', 'weight_list')
 )
+
