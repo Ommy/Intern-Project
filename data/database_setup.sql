@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `housing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `address_id` int(11) NOT NULL,
   `price` decimal(9,0) NOT NULL DEFAULT '0',
-  `source` int(3) NOT NULL,
+  `source` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `address_id` (`address_id`)
