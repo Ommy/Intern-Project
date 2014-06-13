@@ -178,6 +178,14 @@ body {
     display: none;
 }
 
+a.external-link {
+    background: url('../img/link.png') no-repeat center;
+    display: inline-block;
+    margin: 0 5px;
+    text-indent: -9999px;
+    width: 10px;
+}
+
 #loader {
     background: rgba(0, 0, 0, 0.8) url('../img/loader.gif') no-repeat center;
     display: none;
