@@ -9,7 +9,7 @@
     <script type="text/javascript">
         var COMPANY_LATITUDE  = 37.792074;
         var COMPANY_LONGITUDE = -122.398723;
-        var ICON_LOCATION     = '{% static "img/lookout_logo.min.png" %}';
+        var ICON_LOCATION     = '{% static "img/lookout-icon.png" %}';
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="{% static "js/app.js" %}"></script>
@@ -20,19 +20,35 @@
 </head>
 
 <body>
-    <nav class="st-menu st-effect-1" id="sidebar">
-        <h2 class="icon icon-lab">Sidebar</h2>
-        <ul>
-            <li><a class="icon icon-data" href="#">Data Management</a></li>
-            <li><a class="icon icon-location" href="#">Location</a></li>
-            <li><a class="icon icon-study" href="#">Study</a></li>
-            <li><a class="icon icon-photo" href="#">Collections</a></li>
-            <li><a class="icon icon-wallet" href="#">Credits</a></li>
-        </ul>
-    </nav>
-    <div id="map-canvas" />
-</body>
-
-</html>
+    <div id="st-container" class="st-container st-effect-4 st-menu-open">
+        <a id="expand-btn" href="#"></a>
+        <nav id="sidebar" class="st-menu st-effect-4">
+            <h1 id="logo">Lookout</h1>
+            <form>
+                <p>
+                    <label>Distance from work:</label>
+                </p>
+                <p>
+                    <label>Price Range:</label>
+                </p>
+                <p>
+                    <label title="How much you're willing to live near recently commited crimes.">How brave are you:</label>
+                    <select>
+                        <option value="0">Dare Devil</option>
+                        <option value="1">Brave</option>
+                        <option value="2">Cautious</option>
+                        <option value="3">Chicken</option>
+                    </select>
+                </p>
+            </form>
+        </nav>
+        <div class="st-pusher">
+            <div class="st-content">
+                <div class="st-content-inner">
+                    <div id="map-canvas" />
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

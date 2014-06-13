@@ -16,6 +16,7 @@
 
         $(document).ready(function() {
             addCompanyMarker();
+            openSidebar();
         });
     });
 
@@ -28,7 +29,13 @@
         google.maps.event.addListener(marker, 'click', function() {
             window.map.panTo(company_latlng)
         });
-    }
+    };
+
+    openSidebar = function() {
+        $('#expand-btn').click(function() {
+            $('#st-container').toggleClass('st-menu-open');
+        });
+    };
 
 /*
     clearMarkers = function () {
