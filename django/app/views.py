@@ -104,7 +104,7 @@ def weight_list(request):
                         crime_distance_score = (work_distance - crime_distance)/work_distance
                         severity = CRIME_SEVERITY[crime.category]
                         crime_score += severity*crime_distance_score
-                crime_score = (MAX_SEVERITY*work_distance)/(crime_score)
+                crime_score = (MAX_SEVERITY*work_distance*crime_count)/(crime_score)
                 weight = (crime_score*safety) + distance_score + price_score
                 house_in_range.append({'latitude' : float(house.address.latitude), 
                                        'longitude' : float(house.address.longitude), 
