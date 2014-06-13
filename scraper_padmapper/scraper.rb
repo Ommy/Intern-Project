@@ -165,7 +165,7 @@ class Scraper
                     listing_price       = html.xpath(AIRBNB_PRICE).to_s.gsub(HTML_TAG_REGEX, "").gsub(/\$/, "").strip
                     listing_address     = html.xpath(AIRBNB_ADDRESS).to_s.gsub(HTML_TAG_REGEX, "").strip
                     listing_price       = (listing_price.to_i * 30).to_s
-                    listing_type        = AIRBNB_TYPE
+                    listing_type        = link
 
                 elsif resp.body.include? "META" and resp.body.include? "craigslist"
                     link = resp.body.match(CL_URL_REGEX).to_s.gsub(URL_STRIP_REGEX, "")
@@ -192,7 +192,7 @@ class Scraper
                                                                                         .gsub(HTML_TAG_REGEX, "")
                                                                                         .gsub(ADDRESS_REGEX, "")
                                                                                         .strip
-                    listing_type        = PAD_LISTER_TYPE
+                    listing_type        = link
 
                 end
                 addr_id = generate_addresses_csv id, listing_address, listing_type == CRAIGSLIST_TYPE unless listing_price.empty?
@@ -205,8 +205,8 @@ class Scraper
         end
     end
 
-    def save_housing_data(price, source, address_id)
-        House.create(:address_id => address_id, :price => price, :source => source)
+    def save_housing_data(price, house_url, address_id)
+        House.create(:address_id => address_id, :price => price, :source => house_url)
     end
 
     def generate_addresses_csv(id, street_address, is_cl = false)
@@ -224,15 +224,15 @@ class Scraper
         if !geo.nil? and !is_cl
             street = (address[0].nil? ? ( geo.full_address.nil? ? "NULL" : geo.full_address.split(",")[0]) : address[0]).strip
             city = (address[1].nil? ? ( geo.city.nil? ? "NULL" : geo.city) : address[1]).strip
-            country = (address[3].nil? ? (geo.country.nil? ? "NULL" : geo.country) : address[3]).strip
+            country = (address[3].nil? ? (geo.country.nil? ? "USA" : geo.country) : address[3]).strip
         elsif is_cl and !geo.nil?
             street  = (geo.full_address.nil? ? "NULL" : geo.full_address.split(",")[0]).strip
             city    = (geo.city.nil? ? "NULL" : geo.city).strip
-            country = (geo.country.nil? ? "NULL" : geo.country).strip
+            country = (geo.country.nil? ? "USA" : geo.country).strip
         else
             street  = (address[0].nil? ? "NULL" : address[0]).strip
             city    = (address[1].nil? ? "NULL" : address[1]).strip
-            country = (address[3].nil? ? "NULL" : address[3]).strip
+            country = (address[3].nil? ? "USA" : address[3]).strip
         end
         csv_string = "#{street}*#{city}*#{country}*#{@lat_long_map[id][:lng]}*#{@lat_long_map[id][:lat]}"
         #puts csv_string
